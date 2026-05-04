@@ -11,13 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("categorias")
 public class CategoriaController {
 
-    @Autowired
+    @Autowired //indica para o Springboot que ele vai instanciar(criar) esse objeto
     private CategoriaRepository repository;
 
     @PostMapping
@@ -27,7 +25,7 @@ public class CategoriaController {
     }
 
     @GetMapping
-    public Page<DadosListagemCategoria> listarCategorias(@PageableDefault(size=10, sort = {"nome"}) Pageable paginacao){
+    public Page<DadosListagemCategoria> listarCategorias(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao){
         return repository.findAllByAtivoTrue(paginacao)
                 .map(DadosListagemCategoria::new);
     }
@@ -37,9 +35,9 @@ public class CategoriaController {
     public void atualizarCategoria(@RequestBody @Valid DadosAtualizarCategoria dados){
         var categoria = repository.getReferenceById(dados.id());
         categoria.atualizarCategoria(dados);
-
     }
-    //    @DeleteMapping("/{id}")
+
+//    @DeleteMapping("/{id}")
 //    @Transactional
 //    public void deletarCategoria(@PathVariable Long id){
 //        repository.deleteById(id);
@@ -55,9 +53,9 @@ public class CategoriaController {
     @GetMapping("/{id}")
     public DadosDetalhamentoCategoria detalharCategoria(@PathVariable Long id){
         Categoria categoria = repository.findByIdAndAtivoTrue(id)
-                .orElseThrow(()-> new ResponseStatusException(
+                .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "Categoria não existente"
+                        "Categoria não existe"
                 ));
         return new DadosDetalhamentoCategoria(categoria);
     }
